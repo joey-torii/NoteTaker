@@ -48,11 +48,12 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
+                titleInput = titleEditText.getText().toString();
                 intent.putExtra("titleEditText", titleInput);
                 setResult(Activity.RESULT_OK, intent);
-                titleInput = titleEditText.getText().toString();
+//                titleInput = titleEditText.getText().toString();
                 Toast.makeText(NoteActivity.this, "" + titleInput, Toast.LENGTH_SHORT).show();
-//                finish();
+                finish();
             }
         });
     }

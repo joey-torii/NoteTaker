@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     String recieveText;
 
     List<Note> noteList;
+    ArrayAdapter<Note> arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +57,29 @@ public class MainActivity extends AppCompatActivity {
 //        listView.setAdapter(arrayAdapter);
 
         noteList = new ArrayList<Note>();
-        noteList.add(new Note("woah", "hello"));
+//        noteList.add(new Note("woah", "hello"));
         ListView listView = (ListView) findViewById(R.id.listView);
         //        Toast.makeText(this, "here: " + recieveText, Toast.LENGTH_LONG).show();
-        ArrayAdapter<Note> arrayAdapter = new ArrayAdapter<Note>(this,
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return false;
+            }
+        });
+
+        arrayAdapter = new ArrayAdapter<Note>(this,
                 android.R.layout.simple_list_item_1,
                 noteList
         );
         listView.setAdapter(arrayAdapter);
-        arrayAdapter.notifyDataSetChanged();
+//        arrayAdapter.notifyDataSetChanged();
     }
 
 
@@ -71,9 +87,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            Intent intent = getIntent();
-            recieveText = intent.getStringExtra("titleEditText");
+
+            recieveText = data.getStringExtra("titleEditText");
             Toast.makeText(this,recieveText + "", Toast.LENGTH_LONG).show();
+            noteList.add(new Note(recieveText, "hello"));
+            arrayAdapter.notifyDataSetChanged();
+
+//            noteList = new ArrayList<Note>();
+//            noteList.add(new Note(recieveText, "hello"));
+//            ListView listView = (ListView) findViewById(R.id.listView);
+//            //        Toast.makeText(this, "here: " + recieveText, Toast.LENGTH_LONG).show();
+//            ArrayAdapter<Note> arrayAdapter = new ArrayAdapter<Note>(this,
+//                    android.R.layout.simple_list_item_1,
+//                    noteList
+//            );
+//            listView.setAdapter(arrayAdapter);
+//            arrayAdapter.notifyDataSetChanged();
         }
     }
 }
