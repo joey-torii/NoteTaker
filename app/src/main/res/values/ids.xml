@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="addButton" type="id"/>
+    <item name="listView" type="id"/>
+    <item name="titleEditText" type="id"/>
+    <item name="spinner" type="id"/>
+    <item name="content" type="id"/>
+    <item name="doneButton" type="id"/>
+</resources>
