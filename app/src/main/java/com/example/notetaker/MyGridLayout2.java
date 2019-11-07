@@ -11,10 +11,11 @@ public class MyGridLayout2 extends GridLayout {
 
     public MyGridLayout2(final Context context){
         super(context);
-//        setBackground(context.getDrawable(GridLayout));
         setColumnCount(2);
 
-
+        /*
+        The EditText for title
+         */
         EditText titleEditText = new EditText(context);
         titleEditText.setHint("Title");
         GridLayout.Spec editTextRowSpec = GridLayout.spec(0, 1, 1/2);
@@ -23,6 +24,9 @@ public class MyGridLayout2 extends GridLayout {
         titleEditText.setLayoutParams(layoutParams1);
         titleEditText.setId(R.id.titleEditText);
 
+        /*
+        the spinner
+         */
         Spinner spinner = new Spinner(context);
         spinner.setId(R.id.spinner);
         GridLayout.Spec spinnerRowSpec = GridLayout.spec(0,1,1/2);
@@ -30,6 +34,9 @@ public class MyGridLayout2 extends GridLayout {
         GridLayout.LayoutParams layoutParams2 = new GridLayout.LayoutParams(spinnerRowSpec, spinnerColSpec);
         spinner.setLayoutParams(layoutParams2);
 
+        /*
+        the EditText for the content of the note
+         */
         EditText enterText = new EditText(context);
         enterText.setHint("Content");
         GridLayout.Spec enterTextRowSpec = GridLayout.spec(1, 1, 15);
@@ -39,6 +46,9 @@ public class MyGridLayout2 extends GridLayout {
         enterText.setId(R.id.content);
         enterText.setLayoutParams(layoutParams3);
 
+        /*
+        the done button that allows the user to go back to the MainActivity
+         */
         Button myButton = new Button(context);
         myButton.setId(R.id.doneButton);
         myButton.setText("Done");
@@ -47,6 +57,7 @@ public class MyGridLayout2 extends GridLayout {
         GridLayout.LayoutParams layoutParams4 = new GridLayout.LayoutParams(buttonRowSpec, buttonColSpec);
         myButton.setLayoutParams(layoutParams4);
 
+        // adding all the different components to the View
         addView(titleEditText);
         addView(spinner);
         addView(enterText);

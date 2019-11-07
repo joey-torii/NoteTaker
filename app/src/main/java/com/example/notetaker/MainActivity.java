@@ -1,3 +1,14 @@
+/**
+ * This program computes an app that allows the user to take, edit, and delete notes
+ * CPSC 312-01, Fall 2019
+ * Programming Assignment #6
+ * No sources to cite.
+ *
+ * @author Joseph Torii, Eric Av
+ * @version v1.0 11/6/19
+ */
+
+
 package com.example.notetaker;
 
 import androidx.annotation.Nullable;
@@ -22,17 +33,17 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     static final int LOGIN_REQUEST_CODE = 1;
-    static final int RELOGIN_CODE = 2;
     String recieveText;
     String recieveContent;
+    String recieveSpinner;
 
+    int positionText = 0;
     List<Note> noteList;
     ArrayAdapter<Note> arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
 
         MyGridLayout myGridLayout = new MyGridLayout(this);
         setContentView(myGridLayout);
@@ -53,11 +64,18 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                recieveText = noteList.get(position).getTitle();
+                recieveContent = noteList.get(position).getContent();
+
                 intent.putExtra("titleText", recieveText);
                 intent.putExtra("contentText", recieveContent);
-                setResult(RESULT_OK, intent);
-                startActivityForResult(intent, RELOGIN_CODE);
+                intent.putExtra("spinnerText", recieveSpinner);
+                startActivityForResult(intent, LOGIN_REQUEST_CODE);
+
+                noteList.remove(position);
+                arrayAdapter.notifyDataSetChanged();
             }
         });
 
@@ -86,8 +104,6 @@ public class MainActivity extends AppCompatActivity {
                 noteList
         );
         listView.setAdapter(arrayAdapter);
-//        arrayAdapter.notifyDataSetChanged()t ;
-
     }
 
     @Override
@@ -97,9 +113,11 @@ public class MainActivity extends AppCompatActivity {
 
             recieveText = data.getStringExtra("titleEditText");
             recieveContent = data.getStringExtra("contentEditText");
+            recieveSpinner = data.getStringExtra("spinnerEditText");
 
             noteList.add(new Note(recieveText, recieveContent));
             arrayAdapter.notifyDataSetChanged();
         }
     }
 }
+
