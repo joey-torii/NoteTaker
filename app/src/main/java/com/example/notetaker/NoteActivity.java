@@ -51,6 +51,7 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
 
             titleEditText.setText(titleInput);
             contentEditText.setText(contentInput);
+            spinnerText.setSelection(spinnerInput);
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, choice);
@@ -72,7 +73,6 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
                         intent.putExtra("contentEditText", contentInput);
                         intent.putExtra("spinnerEditText", spinnerInput);
                         setResult(Activity.RESULT_OK, intent);
-                        //titleInput = titleEditText.getText().toString();
                         finish();
                     }
                     else
@@ -88,17 +88,6 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK){
-//            titleInput = data.getStringExtra("titleText");
-//            contentInput = data.getStringExtra("contentText");
-//            titleEditText.setText(titleInput);
-//            contentEditText.setText(contentInput);
-//        }
-//    }
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
 
@@ -107,3 +96,7 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> parent){}
 }
+
+
+
+

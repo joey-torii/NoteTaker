@@ -8,7 +8,6 @@
  * @version v1.0 11/6/19
  */
 
-
 package com.example.notetaker;
 
 import androidx.annotation.Nullable;
@@ -35,9 +34,8 @@ public class MainActivity extends AppCompatActivity {
     static final int LOGIN_REQUEST_CODE = 1;
     String recieveText;
     String recieveContent;
-    String recieveSpinner;
+    int recieveSpinner;
 
-    int positionText = 0;
     List<Note> noteList;
     ArrayAdapter<Note> arrayAdapter;
 
@@ -113,11 +111,10 @@ public class MainActivity extends AppCompatActivity {
 
             recieveText = data.getStringExtra("titleEditText");
             recieveContent = data.getStringExtra("contentEditText");
-            recieveSpinner = data.getStringExtra("spinnerEditText");
+            recieveSpinner = data.getIntExtra("spinnerEditText", 0);
 
             noteList.add(new Note(recieveText, recieveContent));
             arrayAdapter.notifyDataSetChanged();
         }
     }
 }
-

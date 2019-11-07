@@ -17,7 +17,8 @@ public class Note {
 
     /*
     The EVC for NoteActivity
-    @params: sets both the title and the content
+    *
+    * @params: sets both the title and the content
      */
     public Note(String title, String content) {
         this.title = title;
@@ -26,6 +27,8 @@ public class Note {
 
     /*
     getter for String title
+    *
+    * @return: title as a String
      */
     public String getTitle() {
         return title;
@@ -33,6 +36,8 @@ public class Note {
 
     /*
     setter for String title
+    *
+    * @params: title as a String
      */
     public void setTitle(String title) {
         this.title = title;
@@ -40,6 +45,8 @@ public class Note {
 
     /*
     getter for String content
+    *
+    * @return: content as a String
      */
     public String getContent() {
         return content;
@@ -47,6 +54,8 @@ public class Note {
 
     /*
     setter for String content
+    *
+    * @params: content as a String
      */
     public void setContent(String content) {
         this.content = content;
@@ -54,6 +63,8 @@ public class Note {
 
     /*
     toString() that just returns the title and the content
+    *
+    * @return: the title and content as a String
      */
     @NonNull
     @Override
