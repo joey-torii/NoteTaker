@@ -1,5 +1,6 @@
 package com.example.notetaker;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -17,9 +18,13 @@ import android.widget.Toast;
 public class NoteActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
 
+    EditText titleEditText;
+    EditText contentEditText;
     static final int LOGIN_REQUEST_CODE = 1;
     String[] choice = {"Personal", "School", "Work", "Other"};
     String titleInput;
+    String contentInput;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,31 +36,55 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Intent intent = getIntent();
 
-        final EditText titleEditText = (EditText) findViewById(R.id.titleEditText);
-//        titleInput = titleEditText.getText().toString();
-
-//        Note note = new Note(titleInput, "hello");
+        titleEditText = (EditText) findViewById(R.id.titleEditText);
+        contentEditText = (EditText) findViewById(R.id.content);
 
         Spinner spin = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,choice);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, choice);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
         spin.setOnItemSelectedListener(this);
 
         Button button = (Button) findViewById(R.id.doneButton);
         button.setText("Done");
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                titleInput = titleEditText.getText().toString();
-                intent.putExtra("titleEditText", titleInput);
-                setResult(Activity.RESULT_OK, intent);
-//                titleInput = titleEditText.getText().toString();
-                Toast.makeText(NoteActivity.this, "" + titleInput, Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+        try {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!titleEditText.getText().toString().isEmpty()) {
+                        titleInput = titleEditText.getText().toString();
+                        contentInput = contentEditText.getText().toString();
+                        Intent intent = new Intent();
+                        intent.putExtra("titleEditText", titleInput);
+                        intent.putExtra("contentEditText", contentInput);
+                        setResult(Activity.RESULT_OK, intent);
+                        //titleInput = titleEditText.getText().toString();
+                        finish();
+                    }
+                    else{
+                        Toast.makeText(NoteActivity.this, "empty-try again" , Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(NoteActivity.this, "empty-try again" , Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == Activity.RESULT_OK){
+
+        }
+        else if(requestCode == 2 && resultCode == Activity.RESULT_OK){
+            titleInput = data.getStringExtra("titleText");
+            contentInput = data.getStringExtra("contentText");
+            titleEditText.setText(titleInput);
+            contentEditText.setText(contentInput);
+        }
     }
 
     @Override
@@ -65,6 +94,4 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onNothingSelected(AdapterView<?> parent){}
-
-
 }

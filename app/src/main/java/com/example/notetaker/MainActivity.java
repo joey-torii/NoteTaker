@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +22,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     static final int LOGIN_REQUEST_CODE = 1;
+    static final int RELOGIN_CODE = 2;
     String recieveText;
+    String recieveContent;
 
     List<Note> noteList;
     ArrayAdapter<Note> arrayAdapter;
@@ -28,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
         MyGridLayout myGridLayout = new MyGridLayout(this);
         setContentView(myGridLayout);
@@ -43,34 +47,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        ListView listView = new ListView(this);
-////        setContentView(listView);
-//        List<String> userString = new ArrayList<>();
-//        userString.add("hello");
-////        userString.add(recieveText);
-////        Toast.makeText(this, "here: " + recieveText, Toast.LENGTH_LONG).show();
-//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-//                this,
-//                android.R.layout.simple_list_item_1,
-//                userString
-//        );
-//        listView.setAdapter(arrayAdapter);
-
         noteList = new ArrayList<Note>();
-//        noteList.add(new Note("woah", "hello"));
+
         ListView listView = (ListView) findViewById(R.id.listView);
-        //        Toast.makeText(this, "here: " + recieveText, Toast.LENGTH_LONG).show();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                intent.putExtra("titleText", recieveText);
+                intent.putExtra("contentText", recieveContent);
+                setResult(RESULT_OK, intent);
+                startActivityForResult(intent, RELOGIN_CODE);
             }
         });
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                return false;
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                dialog.setTitle( "Delete a Note" )
+                        .setMessage("Are you sure you want to delete your " + recieveText + " note?")
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialoginterface, int i) {
+                                dialoginterface.cancel();
+                            }})
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialoginterface, int i) {
+                                noteList.remove(position);
+                                arrayAdapter.notifyDataSetChanged();
+                            }
+                        }).show();
+                return true;
             }
         });
 
@@ -79,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
                 noteList
         );
         listView.setAdapter(arrayAdapter);
-//        arrayAdapter.notifyDataSetChanged();
-    }
+//        arrayAdapter.notifyDataSetChanged()t ;
 
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -89,20 +96,10 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK){
 
             recieveText = data.getStringExtra("titleEditText");
-            Toast.makeText(this,recieveText + "", Toast.LENGTH_LONG).show();
-            noteList.add(new Note(recieveText, "hello"));
-            arrayAdapter.notifyDataSetChanged();
+            recieveContent = data.getStringExtra("contentEditText");
 
-//            noteList = new ArrayList<Note>();
-//            noteList.add(new Note(recieveText, "hello"));
-//            ListView listView = (ListView) findViewById(R.id.listView);
-//            //        Toast.makeText(this, "here: " + recieveText, Toast.LENGTH_LONG).show();
-//            ArrayAdapter<Note> arrayAdapter = new ArrayAdapter<Note>(this,
-//                    android.R.layout.simple_list_item_1,
-//                    noteList
-//            );
-//            listView.setAdapter(arrayAdapter);
-//            arrayAdapter.notifyDataSetChanged();
+            noteList.add(new Note(recieveText, recieveContent));
+            arrayAdapter.notifyDataSetChanged();
         }
     }
 }
