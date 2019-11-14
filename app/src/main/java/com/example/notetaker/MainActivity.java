@@ -10,6 +10,7 @@
 
 package com.example.notetaker;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,22 +46,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MyGridLayout myGridLayout = new MyGridLayout(this);
-        setContentView(myGridLayout);
+//        MyGridLayout myGridLayout = new MyGridLayout(this);
+//        setContentView(myGridLayout);
 
-        Button button = (Button) findViewById(R.id.addButton);
+//        Button button = (Button) findViewById(R.id.addButton);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
-                startActivityForResult(intent, LOGIN_REQUEST_CODE);
-            }
-        });
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+//                startActivityForResult(intent, LOGIN_REQUEST_CODE);
+//            }
+//        });
+
+        final ListView listView = new ListView(this);
+        setContentView(listView);
 
         noteList = new ArrayList<Note>();
 
-        ListView listView = (ListView) findViewById(R.id.listView);
+//        ListView listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -116,5 +122,19 @@ public class MainActivity extends AppCompatActivity {
             noteList.add(new Note(recieveText, recieveContent));
             arrayAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void startEditItemActivity(){
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 }
