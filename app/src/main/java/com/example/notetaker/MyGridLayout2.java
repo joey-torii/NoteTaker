@@ -2,6 +2,7 @@ package com.example.notetaker;
 
 import android.content.Context;
 import android.view.Gravity;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -11,56 +12,50 @@ public class MyGridLayout2 extends GridLayout {
 
     public MyGridLayout2(final Context context){
         super(context);
-        setColumnCount(2);
+        setColumnCount(3);
 
-        /*
-        The EditText for title
-         */
-        EditText titleEditText = new EditText(context);
+        GridLayout.LayoutParams layoutParams = new LayoutParams();
+        layoutParams.rowSpec = GridLayout.spec(1, 1, 1);
+        layoutParams.columnSpec = GridLayout.spec(0, 3, 1);
+
+
+        final EditText titleEditText = new EditText(context);
+        titleEditText.setLayoutParams(new GridLayout.LayoutParams(GridLayout.spec(0, 1, 1/2), GridLayout.spec(0, 2, 30)));
         titleEditText.setHint("Title");
-        GridLayout.Spec editTextRowSpec = GridLayout.spec(0, 1, 1/2);
-        GridLayout.Spec editTextColSpec = GridLayout.spec(0,1,20);
-        GridLayout.LayoutParams layoutParams1 = new GridLayout.LayoutParams(editTextRowSpec, editTextColSpec);
-        titleEditText.setLayoutParams(layoutParams1);
         titleEditText.setId(R.id.titleEditText);
-
-        /*
-        the spinner
-         */
-        Spinner spinner = new Spinner(context);
-        spinner.setId(R.id.spinner);
-        GridLayout.Spec spinnerRowSpec = GridLayout.spec(0,1,1/2);
-        GridLayout.Spec spinnerColSpec = GridLayout.spec(1,1,1);
-        GridLayout.LayoutParams layoutParams2 = new GridLayout.LayoutParams(spinnerRowSpec, spinnerColSpec);
-        spinner.setLayoutParams(layoutParams2);
-
-        /*
-        the EditText for the content of the note
-         */
-        EditText enterText = new EditText(context);
-        enterText.setHint("Content");
-        GridLayout.Spec enterTextRowSpec = GridLayout.spec(1, 1, 15);
-        GridLayout.Spec enterTextColSpec = GridLayout.spec(0,2,1);
-        GridLayout.LayoutParams layoutParams3 = new GridLayout.LayoutParams(enterTextRowSpec, enterTextColSpec);
-        enterText.setGravity(Gravity.TOP);
-        enterText.setId(R.id.content);
-        enterText.setLayoutParams(layoutParams3);
-
-        /*
-        the done button that allows the user to go back to the MainActivity
-         */
-        Button myButton = new Button(context);
-        myButton.setId(R.id.doneButton);
-        myButton.setText("Done");
-        GridLayout.Spec buttonRowSpec = GridLayout.spec(2, 1, 1);
-        GridLayout.Spec buttonColSpec = GridLayout.spec(0,2,1);
-        GridLayout.LayoutParams layoutParams4 = new GridLayout.LayoutParams(buttonRowSpec, buttonColSpec);
-        myButton.setLayoutParams(layoutParams4);
-
-        // adding all the different components to the View
+        titleEditText.setGravity(Gravity.TOP);
         addView(titleEditText);
-        addView(spinner);
-        addView(enterText);
-        addView(myButton);
+
+
+        final Spinner spinnerType = new Spinner(context);
+        spinnerType.setLayoutParams(new GridLayout.LayoutParams(GridLayout.spec(0, 1, 1/2), GridLayout.spec(2, 1, 1)));
+        spinnerType.setId(R.id.spinnerType);
+        ArrayAdapter<CharSequence> spinnerArrayAdapter = ArrayAdapter.createFromResource(
+                context,
+                R.array.noteTypesArray,
+                android.R.layout.simple_spinner_item);
+        spinnerType.setAdapter(spinnerArrayAdapter);
+        spinnerType.setGravity(Gravity.TOP);
+        addView(spinnerType);
+
+
+        final EditText contentEditText = new EditText(context);
+        contentEditText.setLayoutParams(layoutParams);
+        contentEditText.setId(R.id.contentEditText);
+        contentEditText.setGravity(Gravity.TOP);
+        contentEditText.setHint("Content");
+        addView(contentEditText);
+
+
+        Button doneButton = new Button(context);
+        GridLayout.LayoutParams buttonParams = new LayoutParams();
+        buttonParams.rowSpec = GridLayout.spec(2, 1, 1/2);
+        buttonParams.columnSpec = GridLayout.spec(0, 3, 1);
+        doneButton.setLayoutParams(buttonParams);
+        contentEditText.setLayoutParams(layoutParams);
+        doneButton.setId(R.id.doneButton);
+        doneButton.setGravity(Gravity.CENTER);
+        doneButton.setText("Done");
+        addView(doneButton);
     }
 }

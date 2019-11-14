@@ -2,73 +2,61 @@ package com.example.notetaker;
 
 import androidx.annotation.NonNull;
 
-public class Note {
+import java.io.Serializable;
 
-    private String title;   // String for title edit Text
-    private String content; // String for content eit text
+public class Note implements Serializable {
 
-    /*
-    The default constructor for NoteActivity
-     */
+    private String title;
+    private String content;
+    private String type;
+
+
     public Note(){
-        this.title = "";
-        this.content ="";
+        this.title="";
+        this.content="";
+        this.type="";
     }
 
-    /*
-    The EVC for NoteActivity
-    *
-    * @params: sets both the title and the content
-     */
-    public Note(String title, String content) {
-        this.title = title;
+
+    public Note(String title, String content, String type){
+        this.title = type;
         this.content = content;
+        this.type = type;
     }
 
-    /*
-    getter for String title
-    *
-    * @return: title as a String
-     */
-    public String getTitle() {
-        return title;
+
+    public String getType() {
+        return type;
     }
 
-    /*
-    setter for String title
-    *
-    * @params: title as a String
-     */
-    public void setTitle(String title) {
-        this.title = title;
+
+    public void setType(String type) {
+        this.type = type;
     }
 
-    /*
-    getter for String content
-    *
-    * @return: content as a String
-     */
+
     public String getContent() {
         return content;
     }
 
-    /*
-    setter for String content
-    *
-    * @params: content as a String
-     */
+
     public void setContent(String content) {
         this.content = content;
     }
 
-    /*
-    toString() that just returns the title and the content
-    *
-    * @return: the title and content as a String
-     */
+
+    public String getTitle() {
+        return title;
+    }
+
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     @NonNull
     @Override
     public String toString() {
-        return title + content;
+        return title.length() > 0 ? this.title : "[empty title]";
     }
 }
