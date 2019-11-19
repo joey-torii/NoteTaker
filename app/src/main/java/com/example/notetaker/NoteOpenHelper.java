@@ -87,10 +87,19 @@ public class NoteOpenHelper extends SQLiteOpenHelper {
     }
 
     public void updateContactById(int id, Note newNote) {
-
+        String sqlUpdate = "UPDATE " + DATABASE_NAME + " SET " + TITLE + "='" +
+                newNote.getTitle() + "', " + TYPE + "='" +
+                newNote.getType() + "' " + CONTENT + "='" +
+                newNote.getContent() + "' WHERE " + ID + "=" + id;
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(sqlUpdate);
+        db.close();
     }
 
     public void deleteAllContacts() {
-
+        String sqlDelete = "DELETE FROM " + DATABASE_NAME;
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(sqlDelete);
+        db.close();
     }
 }
