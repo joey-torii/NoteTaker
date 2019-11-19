@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class Note implements Serializable {
 
+    private int id;
     private String title;
     private String content;
     private String type;
@@ -18,7 +19,8 @@ public class Note implements Serializable {
     }
 
 
-    public Note(String title, String content, String type){
+    public Note(int id, String title, String content, String type){
+        this.id = id;
         this.title = type;
         this.content = content;
         this.type = type;
