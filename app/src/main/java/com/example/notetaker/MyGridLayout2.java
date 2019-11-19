@@ -1,6 +1,12 @@
 package com.example.notetaker;
 
+import android.content.Context;
+import android.view.Gravity;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.Spinner;
 
 public class MyGridLayout2 extends GridLayout {
 
@@ -54,4 +60,4 @@ public class MyGridLayout2 extends GridLayout {
         addView(doneButton);
     }
 }
-}
+

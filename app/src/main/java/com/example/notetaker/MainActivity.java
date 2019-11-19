@@ -1,8 +1,27 @@
 package com.example.notetaker;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -88,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 // show toast
                 // challenge: try to display the indexes of the selected items
                 switch (menuItem.getItemId()) {
-                    case R.id.deleteMenuItem:
+                    case R.id.deleteItem:
                         // not necessarily for PA7...
                         String temp = notes.getCheckedItemPositions().toString();
                         Toast.makeText(MainActivity.this, temp, Toast.LENGTH_SHORT).show();

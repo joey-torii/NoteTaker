@@ -1,6 +1,8 @@
 package com.example.notetaker;
 
+import android.content.Context;
 import android.widget.GridLayout;
+import android.widget.ListView;
 
 public class MyGridLayout extends GridLayout {
 
