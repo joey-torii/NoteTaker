@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,89 +14,83 @@ import static android.provider.Settings.NameValueTable.NAME;
 
 public class NoteOpenHelper extends SQLiteOpenHelper {
 
-    static final String DATABASE_NAME = "notesDatabase";
-    static final int DATABASE_VERSION = 1;
+    static final String TAG = "SQLiteFunTag";
 
-    static final String TABLE_NOTES = "tableNotes";
-    static final String ID = "_id";
+    // define some fields for our database
+    static final String DATABASE_NAME = "noteDatabase";
+    static final int DATABASE_VERSION = 1;
     static final String TITLE = "title";
+    static final String ID = "_id"; // _id is for use with adapters later
     static final String CONTENT = "content";
     static final String TYPE = "type";
 
-    public NoteOpenHelper(Context context){
+    public NoteOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        // where we create tables in our database
+        // construct a SQL statement to create a table to store contacts
+        // CREATE TABLE tableContacts(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        // name TEXT,
+        // phoneNumber TEXT,
+        // imageResource INTEGER)
 
-        String sqlCreate = "CREATE TABLE " + TABLE_NOTES + "(" +
-                ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                TITLE + " TEXT, " +
+        // create a string that represents our SQL statement
+        // structured query language
+        String sqlCreate = "CREATE TABLE " + TITLE +
+                "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 CONTENT + " TEXT, " +
                 TYPE + " TEXT)";
-        db.execSQL(sqlCreate);
+        // execute this sql statement
+        sqLiteDatabase.execSQL(sqlCreate);
+        // onCreate() only executes one time
+        // and that is after the first call to getWritableDatabase()
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
 
-    public void insertNote(Note note){
-        String sqlInsert = "INSERT INTO" + TABLE_NOTES + " VALUES(null, '" +
-                note.getTitle() + "', '" + note.getType() + "', '" +
-                note.getContent() + ")";
-
+    public void insertNote(Note note) {
+        // INSERT INTO tableContacts VALUES(null, 'Spike the Bulldog',
+        // '509-509-5095', -1)
+        String sqlInsert = "INSERT INTO " + TITLE + " VALUES(null, '" +
+                note.getContent() + "', '" +
+                note.getType() + "','" + ")";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(sqlInsert);
-        db.close();
+        db.close(); // good practice to close database open for writing
     }
 
-    public Cursor getSelectAllContactsCursor(){
-
-        String sqlSelect = "SELECT * FROM " + TABLE_NOTES;
+    public Cursor getSelectAllContactsCursor() {
+        // cursor used to navigate through results from a query
+        // think of the cursor like a file cursor
+        // SELECT * FROM tableContacts
+        String sqlSelect = "SELECT * FROM " + TITLE;
         SQLiteDatabase db = getReadableDatabase();
-
+        // use db.rawQuery() because its returs a Cursor
         Cursor cursor = db.rawQuery(sqlSelect, null);
+        // don't close the database, the cursor needs it open
 
         return cursor;
     }
 
-    public List<Note> getSelectAllNotesList(){
+    // for debug purposes only!!
+    // for PA7 use SimpleCursorAdapter to wire up the database to the listview
+    public List<Note> getSelectAllContactsList() {
         List<Note> noteList = new ArrayList<>();
 
-        Cursor cursor = getSelectAllContactsCursor();
-        while(cursor.moveToNext()){
-            int id = cursor.getInt(0);
-            String title = cursor.getString(1);
-            String type = cursor.getString(2);
-            String content = cursor.getString(3);
-            Note note = new Note(id, title, type, content);
-            noteList.add(note);
-        }
         return noteList;
     }
 
-    public void updateContactById(int id, Note newNote){
+    public void updateContactById(int id, Note newNote) {
 
-        String sqlUpate = "UPDATE " + TABLE_NOTES + " SET " + TITLE + "='" +
-                newNote.getTitle() + "', " + TYPE + "='" +
-                newNote.getType() + "', " + CONTENT + "' WHERE " +
-                ID + "=" + id;
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(sqlUpate);
-
-        db.close();
     }
 
-    public void deleteAllContacts(){
-        String sqlDelete = "DELETE FROM " + TABLE_NOTES;
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(sqlDelete);
+    public void deleteAllContacts() {
 
-        db.close();
     }
-
-
 }

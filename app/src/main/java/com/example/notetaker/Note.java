@@ -13,9 +13,17 @@ public class Note implements Serializable {
 
 
     public Note(){
-        this.title="";
-        this.content="";
-        this.type="";
+        id = -1;
+        title = "joey";
+        content = "hello";
+        type = "personal";
+    }
+
+    public Note(String title, String content, String type){
+        this();
+        this.title = title;
+        this.content = content;
+        this.type = type;
     }
 
 
