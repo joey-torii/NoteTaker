@@ -14,13 +14,15 @@ import static android.provider.Settings.NameValueTable.NAME;
 
 public class NoteOpenHelper extends SQLiteOpenHelper {
 
-    static final String TAG = "SQLiteFunTag";
+    static final String TAG = "Tag";
 
     // define some fields for our database
     static final String DATABASE_NAME = "noteDatabase";
     static final int DATABASE_VERSION = 1;
-    static final String TITLE = "title";
+
+    static final String TABLE_NOTES = "tableNotes";
     static final String ID = "_id"; // _id is for use with adapters later
+    static final String TITLE = "title";
     static final String CONTENT = "content";
     static final String TYPE = "type";
 
@@ -39,10 +41,12 @@ public class NoteOpenHelper extends SQLiteOpenHelper {
 
         // create a string that represents our SQL statement
         // structured query language
-        String sqlCreate = "CREATE TABLE " + TITLE +
+        String sqlCreate = "CREATE TABLE " + TABLE_NOTES +
                 "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TITLE + " TEXT, " +
                 CONTENT + " TEXT, " +
                 TYPE + " TEXT)";
+//        Log.d(TAG, "onCreate: " + sqlCreate);
         // execute this sql statement
         sqLiteDatabase.execSQL(sqlCreate);
         // onCreate() only executes one time
@@ -57,19 +61,20 @@ public class NoteOpenHelper extends SQLiteOpenHelper {
     public void insertNote(Note note) {
         // INSERT INTO tableContacts VALUES(null, 'Spike the Bulldog',
         // '509-509-5095', -1)
-        String sqlInsert = "INSERT INTO " + TITLE + " VALUES(null, '" +
+        String sqlInsert = "INSERT INTO " + TABLE_NOTES + " VALUES(null, '" +
+                note.getTitle() + "', '" +
                 note.getContent() + "', '" +
-                note.getType() + "','" + ")";
+                note.getType() + "'" + ")";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(sqlInsert);
         db.close(); // good practice to close database open for writing
     }
 
-    public Cursor getSelectAllContactsCursor() {
+    public Cursor getSelectAllNotesCursor() {
         // cursor used to navigate through results from a query
         // think of the cursor like a file cursor
         // SELECT * FROM tableContacts
-        String sqlSelect = "SELECT * FROM " + TITLE;
+        String sqlSelect = "SELECT * FROM " + TABLE_NOTES;
         SQLiteDatabase db = getReadableDatabase();
         // use db.rawQuery() because its returs a Cursor
         Cursor cursor = db.rawQuery(sqlSelect, null);
@@ -80,24 +85,35 @@ public class NoteOpenHelper extends SQLiteOpenHelper {
 
     // for debug purposes only!!
     // for PA7 use SimpleCursorAdapter to wire up the database to the listview
-    public List<Note> getSelectAllContactsList() {
+    public List<Note> getSelectAllNotesList() {
         List<Note> noteList = new ArrayList<>();
 
+        Cursor cursor = getSelectAllNotesCursor();
+        while (cursor.moveToNext())
+        {
+            int id = cursor.getInt(0);
+            String title = cursor.getString(1);
+            String content = cursor.getString(2);
+            String type = cursor.getString(3);
+            Note note = new Note(id, title, content, type);
+            noteList.add(note);
+        }
         return noteList;
     }
 
     public void updateContactById(int id, Note newNote) {
-        String sqlUpdate = "UPDATE " + DATABASE_NAME + " SET " + TITLE + "='" +
-                newNote.getTitle() + "', " + TYPE + "='" +
-                newNote.getType() + "' " + CONTENT + "='" +
+        String sqlUpdate = "UPDATE " + TABLE_NOTES + " SET " + TITLE + "='" +
+                newNote.getTitle() + "', " + CONTENT + " '" +
                 newNote.getContent() + "' WHERE " + ID + "=" + id;
+//        Log.d(TAG, "updateContactById: " + sqlUpdate);
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(sqlUpdate);
         db.close();
     }
 
-    public void deleteAllContacts() {
-        String sqlDelete = "DELETE FROM " + DATABASE_NAME;
+    public void deleteAllNotes() {
+        String sqlDelete = "DELETE FROM " + TABLE_NOTES;
+//        Log.d(TAG, "deleteAllContacts: " + sqlDelete);
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(sqlDelete);
         db.close();

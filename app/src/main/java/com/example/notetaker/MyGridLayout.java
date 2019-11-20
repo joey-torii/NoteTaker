@@ -13,16 +13,6 @@ public class MyGridLayout extends GridLayout {
         // Button newNoteButton;
         setColumnCount(1);
 
-//        GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-//        layoutParams.rowSpec = GridLayout.spec(0, 1,1/2);
-//        layoutParams.columnSpec = GridLayout.spec(0, 1, 1);
-//
-//        newNoteButton = new Button(context);
-//        newNoteButton.setId(R.id.addNoteButton);
-//        newNoteButton.setText(R.string.add_note);
-//        newNoteButton.setLayoutParams(layoutParams);
-//        this.addView(newNoteButton);
-
         GridLayout.LayoutParams notesListLayout = new GridLayout.LayoutParams();
         notesListLayout.rowSpec = GridLayout.spec(0, 1, 1);
         notesListLayout.columnSpec = GridLayout.spec(0, 1, 1);
