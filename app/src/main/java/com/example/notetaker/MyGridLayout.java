@@ -5,12 +5,10 @@ import android.widget.GridLayout;
 import android.widget.ListView;
 
 public class MyGridLayout extends GridLayout {
-
     public MyGridLayout(final Context context){
         super(context);
 
         ListView notesListView;
-        // Button newNoteButton;
         setColumnCount(1);
 
         GridLayout.LayoutParams notesListLayout = new GridLayout.LayoutParams();

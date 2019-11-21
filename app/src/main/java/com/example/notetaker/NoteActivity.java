@@ -33,7 +33,8 @@ public class NoteActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent != null){
             note = (Note)intent.getSerializableExtra("note");
-            index = intent.getIntExtra("index", -1);
+            index = intent.getIntExtra("id", -1);
+
             noteTitle.setText(note.getTitle());
             content.setText(note.getContent());
         }

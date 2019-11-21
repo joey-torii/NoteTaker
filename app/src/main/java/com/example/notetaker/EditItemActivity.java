@@ -13,11 +13,6 @@ public class EditItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
 
-        // enable "up" button to go "home"
-        // home could be....
-        // 1) parent activity (set the parent activity in AndroidManifest.xml)
-        // 2) pop the current activity off the stack and return to the previous activity
-        // we will do 2) today
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

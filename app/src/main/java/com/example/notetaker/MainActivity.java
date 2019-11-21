@@ -29,95 +29,67 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     static final int LOGIN_REQUEST_CODE = 1;
-    private ArrayAdapter<Note> arrayAdapter;
-    private List<Note> noteList;
     private Note newNote;
     private int index;
-    NoteOpenHelper openHelper = new NoteOpenHelper(this);
-
-
+    final NoteOpenHelper openHelper = new NoteOpenHelper(this);
     SimpleCursorAdapter cursorAdapter;
 
+    //Pre: Second Activity finishes
+    //Post: Edit a note and add a note function returns
+    //Function: To return a saved note state and edit a note by saving it as well
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             newNote = (Note)data.getSerializableExtra("note");
             index = data.getIntExtra("index", -1);
-            Cursor cursor = openHelper.getSelectAllNotesCursor();
 
             if(index > -1) {
-                noteList.set(index, newNote);
-                arrayAdapter.notifyDataSetChanged();
+                openHelper.updateNoteById(index, newNote);
+                Cursor cursor = openHelper.getAllNotes();
                 cursorAdapter.changeCursor(cursor);
-                openHelper.updateContactById(index, newNote);
             }
             else {
-                ListView listView = new ListView(this);
-                noteList.add(newNote);
-                arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, noteList);
-                listView.setAdapter(arrayAdapter);
-                arrayAdapter.notifyDataSetChanged();
-                cursorAdapter.changeCursor(cursor);
                 openHelper.insertNote(newNote);
+                Cursor cursor = openHelper.getAllNotes();
+                cursorAdapter.changeCursor(cursor);
             }
         }
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
-        //NoteOpenHelper openHelper = new NoteOpenHelper(this);
-
         if (newNote != null) {
             if (index == -1) {
-                noteList.add(newNote);
                 Cursor cursor =  openHelper.getSelectAllNotesCursor();
                 cursorAdapter.changeCursor(cursor);
-                openHelper.insertNote(newNote);
-                //arrayAdapter.notifyDataSetChanged();
             } else {
-                noteList.set(index, newNote);
                 Cursor cursor =  openHelper.getSelectAllNotesCursor();
                 cursorAdapter.changeCursor(cursor);
-                //arrayAdapter.notifyDataSetChanged();
             }
             newNote = null;
             index = -1;
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        noteList = new ArrayList<>();
         final ListView notes = new ListView(this);
         setContentView(notes);
+        final NoteOpenHelper openHelper = new NoteOpenHelper(this);
 
-        NoteOpenHelper openHelper = new NoteOpenHelper(this);
-        Note note = new Note("hello", "hello", "Work");
-        openHelper.insertNote(note);
-
-//        arrayAdapter = new ArrayAdapter<>(
-//                this,
-//                android.R.layout.simple_list_item_1,
-//                noteList
-//        );
         cursorAdapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_1,
+                android.R.layout.simple_list_item_activated_1,
                 openHelper.getSelectAllNotesCursor(),
                 new String[] {NoteOpenHelper.TITLE},
                 new int[] {android.R.id.text1},
                 0);
 
         notes.setAdapter(cursorAdapter);
-
-        // enable multiple selection on list view
         notes.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        // set the listener for entering CAM (contextual action mode)
-        // user long presses they can select multiple items
         notes.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
@@ -142,23 +114,19 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.deleteMenuItem:
+                        NoteOpenHelper openHelper = new NoteOpenHelper(MainActivity.this);
                         SparseBooleanArray checkedItemPositions = notes.getCheckedItemPositions();
-                        int count = notes.getCount();
-
-                        for(int i = count - 1; i >= 0; i--)
+                        for(int i = 0; i < checkedItemPositions.size(); i++)
                         {
-                            if(checkedItemPositions.get(i))
+                            if(checkedItemPositions.valueAt(i))
                             {
-                                noteList.remove(noteList.get(i));
+                                int id = (int) cursorAdapter.getItemId(checkedItemPositions.keyAt(i));
+                                openHelper.deleteIndividualNote(id);
                             }
-                            //checkedItemPositions.clear();
-                            arrayAdapter.notifyDataSetChanged();
                         }
-                        checkedItemPositions.clear();
-
-                        //arrayAdapter.notifyDataSetChanged();
-                        //Toast.makeText(MainActivity.this, temp, Toast.LENGTH_SHORT).show();
-                        actionMode.finish(); // exit CAM
+                        Cursor cursor = openHelper.getSelectAllNotesCursor();
+                        cursorAdapter.changeCursor(cursor);
+                        actionMode.finish();
                         return true;
                 }
                 return false;
@@ -168,16 +136,22 @@ public class MainActivity extends AppCompatActivity {
             public void onDestroyActionMode(ActionMode actionMode) {
             }
         });
+
+        notes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                int id2 = (int) cursorAdapter.getItemId(position);
+                int id3 = (int) id;
+                Note note = openHelper.getNoteById(id2);
+                intent.putExtra("note", note);
+                intent.putExtra("id", id3);
+                startActivityForResult(intent, LOGIN_REQUEST_CODE);
+            }
+        });
     }
 
-    private void startEditItemActivity() {
-        Cursor cursor = openHelper.getSelectAllNotesCursor();
-        Intent intent = new Intent(MainActivity.this, NoteActivity.class);
-        intent.putExtra("note", new Note());
-        intent.putExtra("index", -1);
-        cursorAdapter.changeCursor(cursor);
-        startActivityForResult(intent, LOGIN_REQUEST_CODE);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -186,20 +160,15 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    // override a callback that executes when the user presses a menu action
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        final Cursor cursor = openHelper.getSelectAllNotesCursor();
         switch (id) {
             case R.id.addMenuItem:
                 Intent intent = new Intent(MainActivity.this, NoteActivity.class);
                 intent.putExtra("note", new Note());
                 intent.putExtra("index", -1);
-                cursorAdapter.changeCursor(cursor);
                 startActivityForResult(intent, LOGIN_REQUEST_CODE);
-                //startEditItemActivity();
                 return true;
             case R.id.deleteItem:
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
@@ -208,9 +177,9 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                noteList.removeAll(noteList);
-                                cursorAdapter.changeCursor(cursor);
                                 openHelper.deleteAllNotes();
+                                Cursor cursor = openHelper.getAllNotes();
+                                cursorAdapter.changeCursor(cursor);
                             }
                         })
                         .setNegativeButton("NO", null)
